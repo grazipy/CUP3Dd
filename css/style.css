@@ -37,9 +37,9 @@ h1 {
 
 .floating-form {
     position: fixed;
-    top: 10vh; /* Ajuste a posição do topo conforme necessário */
-    right: 5vw; /* Ajuste a posição à direita conforme necessário */
-    width: 30vw; /* Defina a largura desejada em unidades de viewport */
+    top: 5vh; /* Ajuste a posição do topo conforme necessário */
+    right: 1vw; /* Ajuste a posição à direita conforme necessário */
+    width: 20vw; /* Defina a largura desejada em unidades de viewport */
     height: auto; /* Permite que a altura se ajuste automaticamente */
     background-color: #fff;
     padding: 2vw; /* Ajuste o padding conforme necessário */
