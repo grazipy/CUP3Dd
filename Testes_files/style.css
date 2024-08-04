@@ -1,0 +1,25 @@
+body {
+    margin:0;
+    font-family: "Montserrat", sans-serif;
+    background-color: #656565;
+}
+
+header {
+    margin-top: 3em;
+    text-align: center;
+    color: rgb(33, 234, 110);
+}
+
+header h1 {
+    font-size: 2em;
+    font-weight: 900;
+}
+
+#container3D canvas {
+    width: 100vw !important;
+    height: 100vh !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    filter: brightness(0.8); /* Adjust the brightness as needed (0 to 1) */
+}

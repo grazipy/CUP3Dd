@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador 3D</title>
+    <link rel="stylesheet" href="css/style.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/heatmap.js/build/heatmap.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Visualizador 3D</h1>
+    </header>
+    <main>
+        <div id="COPO"></div>
+    </main>
+
+    <!-- Floating Form -->
+    <div class="floating-form">
+        <h2>Formulário de Compra de Copo</h2>
+        <form id="purchaseForm">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="quantity">Quantidade:</label>
+            <input type="number" id="quantity" name="quantity" required>
+
+            <input type="file" id="fileInput" accept="image/*" style="display: none;" />
+            <button type="button" id="customButton">Selecionar Arquivo</button>
+
+            <label for="totalPrice">Valor Total:</label>
+            <input type="text" id="totalPrice" name="totalPrice" readonly>
+
+            <button type="button" id="whatsappButton">Comprar</button>
+        </form>
+    </div>
+
+    <script>
+        const pricePerCup = 20;
+
+        document.getElementById('quantity').addEventListener('input', function() {
+            var quantity = parseInt(document.getElementById('quantity').value) || 0;
+            var totalPrice = quantity * pricePerCup;
+            document.getElementById('totalPrice').value = `R$ ${totalPrice.toFixed(2)}`;
+        });
+
+        document.getElementById('customButton').addEventListener('click', function() {
+            document.getElementById('fileInput').click();
+        });
+
+        document.getElementById('whatsappButton').addEventListener('click', function() {
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var quantity = document.getElementById('quantity').value;
+            var photo = document.getElementById('fileInput').files[0];
+            var phoneNumber = '5515992019744'; // Número do WhatsApp do vendedor
+
+            var message = `Olá, meu nome é ${name}. Estou interessado em comprar ${quantity} copo(s) por ${document.getElementById('totalPrice').value}. Meu email é ${email}.`;
+
+            if (photo) {
+                message += `\n\nPor favor, anexe a foto do produto: ${photo.name}`;
+            }
+
+            var whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappURL, '_blank');
+        });
+    </script>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

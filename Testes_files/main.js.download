@@ -1,0 +1,236 @@
+import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
+import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
+
+
+
+var configPadrao = {
+    radius: 125, // raio dos pontos
+    maxOpacity: 0.5,
+    minOpacity: 0,
+    blur: 0.81,
+};
+
+var pontos = [
+    { x: 450, y: 600, value: 1, radius: 110, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 },
+  //  { x: 450, y: 600, value: 1 }, //OZ
+    { x: 500, y: 500, value: 1 , radius: 110, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //PZ
+           { x: 550, y: 420, value: 1, radius: 100, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //Cz
+           { x: 600, y: 300, value: 1 , radius: 120, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //Fz
+           { x: 650, y: 328, value: 1 , radius: 100, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //Fz
+        
+        //atras
+            { x: 300, y: 650, value: 1 , radius: 120, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //O2
+            { x: 450, y: 750, value: 1 , radius: 120, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //O1
+        //lado direito 
+            { x: 600, y: 700, value: 1 , radius: 150, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //P3
+            { x: 700, y: 611, value: 1 , radius: 140, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //C3
+            { x: 800, y: 511, value: 1 , radius: 130, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //F3
+            { x: 800, y: 711, value: 1 , radius: 110, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //F7
+            { x: 700, y: 780, value: 1 , radius: 110, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //T3
+            { x: 600, y: 800, value: 1 , radius: 120, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //T5
+           
+        
+        //lado esquedo
+            { x: 300, y: 500, value: 1 , radius: 110, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //P4
+            { x: 340, y: 390, value: 1 , radius: 120, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //C4
+            { x: 370, y: 260, value: 1 , radius: 130, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //F4
+            { x: 240, y: 330, value: 1 , radius: 110, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //F8
+            { x: 180, y: 450, value: 1 , radius: 100, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //T4
+            { x: 200, y: 550, value: 1 , radius: 140, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //T6
+        
+        
+        //frente
+            { x: 850, y: 350, value: 1 , radius: 110, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //Fp1
+            { x: 480, y: 150, value: 1 , radius: 150, maxOpacity: 0.8, minOpacity: 0.2, blur: 0.5 }, //Fp2
+        
+        
+                
+        ];
+
+
+// Atualize a configuração para permitir substituição por valores específicos de cada ponto
+var dadosFormatados = {
+    max: 1, // valor máximo possível
+    data: pontos.map(point => ({
+        x: point.x,
+        y: point.y,
+        value: point.value,
+        radius: point.radius !== undefined ? point.radius : configPadrao.radius,
+        maxOpacity: point.maxOpacity !== undefined ? point.maxOpacity : configPadrao.maxOpacity,
+        minOpacity: point.minOpacity !== undefined ? point.minOpacity : configPadrao.minOpacity,
+        blur: point.blur !== undefined ? point.blur : configPadrao.blur,
+    })),
+};
+
+var customGradient = {
+    0.1: "rgba(0, 0, 0, 0)", 
+    0.15: "rgba(0, 0, 0, 0.1)",      // Transparente (fundo)
+    0.25: "rgba(0, 255, 0, 0.1)",   // Verde transparente
+    0.5: "rgba(255, 255, 0, 1)",     // Amarelo
+    0.75: "rgba(255, 165, 0, 1)",    // Laranja
+    1.0: "rgba(255, 0, 0, 1)"        // Vermelho
+};
+
+
+// Inicialize o heatmap com o gradiente personalizado
+var heatmapInstance = h337.create({
+    container: document.getElementById('heatmap'),
+    gradient: customGradient,
+    radius: 125,
+    maxOpacity: 0.4,
+    minOpacity: 0,
+    blur: 0.8,
+    // Defina o valor da cor do contorno para evitar contorno preto
+    outlineColor: "rgba(0, 0, 0, 0)"
+});
+
+// Restante do seu código
+
+
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.getElementById("cerebro3D").appendChild(renderer.domElement);
+
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+
+let object;
+let controls;
+
+function criarTexturaMapaDeCalor() {
+    heatmapInstance.setData(dadosFormatados);
+    heatmapInstance.repaint();
+    var heatmapCanvas = heatmapInstance._renderer.canvas;
+    return new THREE.CanvasTexture(heatmapCanvas);
+}
+
+function criarLuzDirecional(posicao) {
+    const luz = new THREE.DirectionalLight(0x383838, 1);
+    luz.position.copy(posicao);
+    luz.castShadow = true;
+    scene.add(luz);
+}
+function parseInputData(inputData) {
+    const parsedPoints = [];
+
+    // Tentar dividir por linhas ou vírgulas
+    const lines = inputData.split(/[\r\n]+/);
+    
+    for (const line of lines) {
+        // Tentar dividir por vírgulas ou espaços
+        const values = line.split(/[\s,]+/).map(parseFloat);
+
+        // Certificar-se de que há pelo menos 3 valores (x, y, value)
+        if (values.length >= 3) {
+            const [x, y, value] = values.slice(0, 3);
+            if (!isNaN(x) && !isNaN(y) && !isNaN(value)) {
+                parsedPoints.push({ x, y, value });
+            }
+        }
+    }
+
+    return parsedPoints;
+}
+
+// Criar luzes direcionais
+//criarLuzDirecional(new THREE.Vector3(0, 2, 0));
+//criarLuzDirecional(new THREE.Vector3(2, 2, 0));
+//criarLuzDirecional(new THREE.Vector3(-2, 2, 0));
+//criarLuzDirecional(new THREE.Vector3(0, 2, 2));
+//criarLuzDirecional(new THREE.Vector3(0, 2, -2));
+
+criarLuzDirecional(new THREE.Vector3(2, 2, 2));
+criarLuzDirecional(new THREE.Vector3(2, 2, -2));
+criarLuzDirecional(new THREE.Vector3(-2, 2, 2));
+criarLuzDirecional(new THREE.Vector3(-2, 2, -2));
+
+//criarLuzDirecional(new THREE.Vector3(2, 0, 0));
+//criarLuzDirecional(new THREE.Vector3(-2, 0, 0));
+//criarLuzDirecional(new THREE.Vector3(0, 0, 2));
+//criarLuzDirecional(new THREE.Vector3(0, 0, -2));
+
+criarLuzDirecional(new THREE.Vector3(2, 0, 2));
+criarLuzDirecional(new THREE.Vector3(2, 0, -2));
+criarLuzDirecional(new THREE.Vector3(-2, 0, 2));
+criarLuzDirecional(new THREE.Vector3(-2, 0, -2));
+
+//criarLuzDirecional(new THREE.Vector3(0, -2, 0));
+//criarLuzDirecional(new THREE.Vector3(2, -2, 0));
+//criarLuzDirecional(new THREE.Vector3(-2, -2, 0));
+//criarLuzDirecional(new THREE.Vector3(0, -2, 2));
+//criarLuzDirecional(new THREE.Vector3(0, -2, -2));
+
+criarLuzDirecional(new THREE.Vector3(2, -2, 2));
+criarLuzDirecional(new THREE.Vector3(2, -2, -2));
+criarLuzDirecional(new THREE.Vector3(-2, -2, 2));
+criarLuzDirecional(new THREE.Vector3(-2, -2, -2));
+
+const loader = new GLTFLoader();
+
+loader.load(
+    'models/cerebro/scene.glb',
+    function (gltf) {
+        object = gltf.scene;
+
+        // Cria uma textura de mapa de calor
+        var texturaMapaDeCalor = criarTexturaMapaDeCalor();
+
+        // Cria um material phong para o objeto
+        var materialPhong = new THREE.MeshPhongMaterial({ color: 0xffffff });
+
+        // Combina o material phong com a textura do mapa de calor
+        materialPhong.map = texturaMapaDeCalor;
+
+        object.traverse((child) => {
+            if (child.isMesh) {
+                child.material = materialPhong;
+            }
+        });
+
+        scene.add(object);
+
+        // Ajusta a posição da câmera
+        const caixaLimitadora = new THREE.Box3().setFromObject(object);
+        const centro = new THREE.Vector3();
+        caixaLimitadora.getCenter(centro);
+        controls.target.copy(centro);
+        camera.position.set(centro.x, centro.y, caixaLimitadora.max.z + 1.5);
+    },
+    function (xhr) {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    },
+    function (error) {
+        console.error(error);
+    }
+);
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+document.getElementById("cerebro3D").appendChild(renderer.domElement);
+
+controls = new OrbitControls(camera, renderer.domElement);
+
+function animate() {
+    requestAnimationFrame(animate);      
+
+    controls.update();
+    
+    renderer.render(scene, camera);
+}
+
+window.addEventListener("resize", function () {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+document.onmousemove = (e) => { 
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+}
+
+animate();
